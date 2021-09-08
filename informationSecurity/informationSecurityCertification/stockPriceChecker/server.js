@@ -38,11 +38,29 @@ app.route("/").get((req, res) => {
 })
 
 app.route("/api/stock-prices").get((req, res) => {
-  const dataResult = {
-    stockData: req.query.stock
+  let stocks = req.query.stock
+
+  if (typeof stocks === "string") {
+    const result = {
+      stockData: {
+        stock: stocks,
+        price: 12,
+        likes: 3
+      }
+    }
+
+    console.log(result)
+
+    return res.status(200).send(result)
   }
 
-  return res.status(200).send(dataResult)
+  const dataResult = stocks.map((currentStock, i) => {
+    return { stock: currentStock, price: 12, rel_likes: 5 }
+  })
+
+  console.log({ stockData: dataResult })
+
+  return res.status(200).send({ stockData: dataResult })
 })
 
 //For FCC testing purposes
