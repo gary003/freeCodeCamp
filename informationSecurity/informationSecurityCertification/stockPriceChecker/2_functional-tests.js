@@ -15,16 +15,18 @@ suite("Functional Tests", () => {
   */
 
   test("Should get one stock", (done) => {
-    return chai
+    chai
       .request(server)
       .get("/api/stock-prices/")
       .query({
         stock: "goog"
       })
       .end((err, res) => {
-        console.log(err, res)
-        assert.isObject(res, "is a object response")
-        assert.isDefined(res.stockData, "stockData is defined")
+        if (!!err) return done(err)
+
+        assert.isObject(res.body, "is a object response")
+        assert.isDefined(res.body.stockData, "stockData is defined")
+
         return done()
       })
   })
