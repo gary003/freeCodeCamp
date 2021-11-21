@@ -2,10 +2,8 @@ const moneyToNames = { 1: "PENNY", 5: "NICKEL", 10: "DIME", 25: "QUARTER", 100: 
 const money = [1, 5, 10, 25, 100, 500, 1000, 2000, 10000]
 const moneyNames = ["PENNY", "NICKEL", "DIME", "QUARTER", "ONE", "FIVE", "TEN", "TWENTY", "ONE HUNDRED"]
 
-const isAvalaibleChange = (
-  change,
-  cid,
-  a = {
+const isAvalaibleChange = (change, cid) => {
+  const changeToGiveBack = {
     PENNY: 0,
     NICKEL: 0,
     DIME: 0,
@@ -16,13 +14,13 @@ const isAvalaibleChange = (
     TWENTY: 0,
     "ONE HUNDRED": 0
   }
-) => {
+
   if (change.length === 0) return true
 
   const changeJSON = change.reduce((acc, val) => {
     acc[moneyToNames[val]] += val
     return acc
-  }, a)
+  }, changeToGiveBack)
 
   return Object.entries(changeJSON).every((val, i) => val[1] / 100 <= cid[i][1])
 }
@@ -32,7 +30,10 @@ const checkCashRegister = (price, cash, cid) => {
 
   const sumCash = cid.reduce((acc, val) => acc + val[1], 0)
 
-  if (cash - price === sumCash) return { status: "CLOSED", change: cid }
+  // console.log(sumCash, cash - price)
+  // console.log(+sumCash.toFixed(2), +(cash - price).toFixed(2))
+
+  if (+(cash - price).toFixed(2) === +sumCash.toFixed(2)) return { status: "CLOSED", change: cid }
 
   const changeBack = Math.round((cash - price) * 100)
   const table = Array(changeBack + 1).fill(null)
@@ -74,13 +75,15 @@ console.log(
     ["TEN", 20],
     ["TWENTY", 60],
     ["ONE HUNDRED", 100]
-  ]),
+  ])
+)
+console.log(
   checkCashRegister(19.4, 20, [
     ["PENNY", 0.3],
     ["NICKEL", 0],
     ["DIME", 0.3],
     ["QUARTER", 0],
-    ["ONE", 10],
+    ["ONE", 0],
     ["FIVE", 0],
     ["TEN", 0],
     ["TWENTY", 0],
